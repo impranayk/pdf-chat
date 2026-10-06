@@ -57,11 +57,11 @@ Finish with one last line exactly like: SOURCE: page 4"""
     answer = ask(prompt)
     found = re.search(r"SOURCE:\s*page\s*(\d+)", answer, re.I)
     answer = re.sub(r"\s*SOURCE:.*$", "", answer, flags=re.I | re.S).strip()
-    if found and int(found.group(1)) in pages:
-        source = int(found.group(1))
-    else:  # model forgot the line: pick the page sharing the most words with the answer
-        words = set(re.findall(r"\w+", answer.lower()))
-        source = max(zip(pages, hits["documents"][0]), key=lambda p: len(words & set(re.findall(r"\w+", p[1].lower()))))[0]
+    # Check the AI's page: keep it only if it shares the most real words (4+ letters) with the answer
+    words = lambda text: {w for w in re.findall(r"[a-z0-9]+", text.lower()) if len(w) > 3}
+    score = {n: len(words(answer) & words(d)) for n, d in zip(pages, hits["documents"][0])}
+    best = [n for n in pages if score[n] == max(score.values())]
+    source = int(found.group(1)) if found and int(found.group(1)) in best else best[0]
     with st.chat_message("assistant"):
         st.write(answer)
         if "don't know" not in answer.lower():

@@ -87,6 +87,12 @@ Quirk: odd source formatting ("page [page 8]", a page cited on an "I don't know"
   - + "I don't know" check first: 10 exact, 4 missing lines, 0 wrong
   - + word-overlap fallback: 14/14 (pages 4, 8, 8, 7, 11; RAG and CEO questions -> "I don't know." with no source)
 - Screenshots used in the reel: ai-reels/public/build/app_answer.jpg, app_dontknow.jpg.
+- LIVE TEST 2026-10-06 (pdf-chat-pranay.streamlit.app, Groq openai/gpt-oss-20b): receipt question answered right
+  ("within 30 days") but cited page 4. The prompt's example line "SOURCE: page 4" biased the model, and page 4 was
+  among the 3 searched so the old check passed it. Fix: the app scores each searched page by shared words (4+ letters)
+  with the answer and keeps the AI's page only if it is a top scorer; otherwise the top scorer. Rewording the example
+  instead ("page <number>") made llama3.2 answer "I don't know" for parking, so the original wording stays.
+  Local re-test after fix: 14/14.
 - Online: `ask()` uses Groq (openai/gpt-oss-20b) when a GROQ_API_KEY secret is set, else local Ollama.
 - Not yet tested through the UI: uploading a different PDF (the browser pane can't upload files).
 
