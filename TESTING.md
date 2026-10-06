@@ -93,6 +93,8 @@ Quirk: odd source formatting ("page [page 8]", a page cited on an "I don't know"
   with the answer and keeps the AI's page only if it is a top scorer; otherwise the top scorer. Rewording the example
   instead ("page <number>") made llama3.2 answer "I don't know" for parking, so the original wording stays.
   Local re-test after fix: 14/14.
+  Live re-test after redeploy (Groq): 8/8 - vacation p4, parking p8, receipt p8 (x2), work from home p7,
+  lost laptop p11, RAG and CEO -> "I don't know." with no source.
 - Online: `ask()` uses Groq (openai/gpt-oss-20b) when a GROQ_API_KEY secret is set, else local Ollama.
 - Not yet tested through the UI: uploading a different PDF (the browser pane can't upload files).
 
